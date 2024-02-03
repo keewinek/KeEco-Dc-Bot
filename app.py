@@ -1,9 +1,12 @@
 import os
 
 import discord
-from dotenv import load_dotenv
-from discord.ext import commands
 from discord import app_commands
+
+from dotenv import load_dotenv
+
+from discord.ext import commands
+from discord.ext.commands import has_permissions
 
 import economy
 
@@ -29,5 +32,16 @@ async def ping(interaction: discord.Interaction):
 @bot.tree.command(name="bal", description="Check your balance")
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message("Your balance: 0 💵")
+    await economy.update_user_nickname(interaction.user)
+
+@bot.tree.command(name="update_all_nicknames", description="Update all server nicknames")
+@commands.cooldown(1, 60, commands.BucketType.user)
+@has_permissions(administrator=True)
+async def update_all_nicknames(interaction: discord.Interaction):
+    await interaction.response.send_message("Updating nicknames...", ephemeral = True)
+    await economy.update_all_guild_nicknames(interaction.guild)
+
+    msg = await interaction.original_response()
+    await msg.edit(content="Nicknames updated!")
 
 bot.run(TOKEN)
