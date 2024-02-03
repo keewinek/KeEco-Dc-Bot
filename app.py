@@ -24,4 +24,8 @@ async def on_ready():
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message("Pong!")
 
+@bot.tree.command(name="bal", description="Check your balance")
+async def ping(interaction: discord.Interaction):
+    await interaction.response.send_message("Your balance: 0💵")
+
 bot.run(TOKEN)
