@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from discord import app_commands
 
+import economy
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
@@ -26,6 +28,6 @@ async def ping(interaction: discord.Interaction):
 
 @bot.tree.command(name="bal", description="Check your balance")
 async def ping(interaction: discord.Interaction):
-    await interaction.response.send_message("Your balance: 0💵")
+    await interaction.response.send_message("Your balance: 0 💵")
 
 bot.run(TOKEN)
