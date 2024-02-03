@@ -31,7 +31,7 @@ async def ping(interaction: discord.Interaction):
 
 @bot.tree.command(name="bal", description="Check your balance")
 async def ping(interaction: discord.Interaction):
-    await interaction.response.send_message("Your balance: 0 💵")
+    await interaction.response.send_message(f"**Your balance:** `{economy.get_balance(interaction.user)} 💵` {interaction.user.mention}")
     await economy.update_user_nickname(interaction.user)
 
 @bot.tree.command(name="update_all_nicknames", description="Update all server nicknames")
