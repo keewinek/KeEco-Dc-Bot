@@ -23,7 +23,5 @@ async def on_ready():
 @bot.tree.command(name="ping", description="Replies with Pong! (check if the bot is online)")
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message("Pong!")
-    await bot.tree.sync()
-
 
 bot.run(TOKEN)
