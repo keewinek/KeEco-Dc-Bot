@@ -20,4 +20,4 @@ async def ping(interaction: discord.Interaction):
     await bot.tree.sync()
 
 
-client.run(TOKEN)
+bot.run(TOKEN)
