@@ -7,7 +7,7 @@ import database
 
 async def update_user_nickname(member):
     try:
-        new_nick = f"{member.global_name}  | {get_balance(member)} 💵"
+        new_nick = f"{member.global_name}      ( {get_balance(member)} 💵 )"
 
         if member.nick == new_nick:
             return

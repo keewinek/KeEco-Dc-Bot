@@ -1,5 +1,7 @@
 import os
 
+import asyncio
+
 import discord
 from discord import app_commands
 
@@ -42,7 +44,25 @@ async def ping(interaction: discord.Interaction):
 
 @bot.tree.command(name="jobs", description="Displays all jobs in game.")
 async def jobs_display(interaction: discord.Interaction):
-    await interaction.response.send_message(embed=jobs.get_jobs_embed())
+    await interaction.response.send_message(embed=jobs.get_jobs_list_embed())
+
+@bot.tree.command(name="job_apply", description="Apply for a job.")
+@bot.tree.describe(job="The name of the job you want to apply for.")
+@bot.tree.choices(job=jobs.get_job_choices())
+async def job_apply(interaction: discord.Interaction, job: str):
+    choosen_job = jobs.get_job(job)
+    if choosen_job is None:
+        await interaction.response.send_message("Job not found!", ephemeral=True)
+        return
+    
+    await interaction.response.send_message(f"Applying for *{choosen_job.name}*...", ephemeral=True)
+
+    await asyncio.sleep(1)
+
+    application_embed = jobs.send_job_application(choosen_job, interaction.user)
+
+    msg = await interaction.original_response()
+    await msg.edit(embed = application_embed, content = None)
 
 @bot.tree.command(name="bal", description="Check your balance")
 async def ping(interaction: discord.Interaction):
