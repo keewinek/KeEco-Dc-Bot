@@ -16,6 +16,7 @@ from discord.ext.commands import has_permissions
 import economy
 import database
 import jobs
+import schools
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -91,6 +92,17 @@ async def job_apply(interaction: discord.Interaction, job: str):
     application_embed = jobs.send_job_application(chosen_job, interaction.user)
 
     await msg.edit(embed = application_embed, content = None)
+
+@bot.tree.command(name="learn", description="Learn something new and gain 📖.")
+@app_commands.describe(school="The name of the school you want to learn from.")
+@app_commands.choices(school=schools.get_school_choices())
+async def learn(interaction: discord.Interaction, school: str):
+    chosen_school = schools.get_school(school)
+    if chosen_school is None:
+        await interaction.response.send_message("School not found!", ephemeral=True)
+        return
+
+    await interaction.response.send_message(content=schools.learn(interaction.user, chosen_school))
 
 @bot.tree.command(name="bal", description="Check your balance")
 async def ping(interaction: discord.Interaction):
