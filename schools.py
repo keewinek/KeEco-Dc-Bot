@@ -23,7 +23,8 @@ all_schools = [
     School("🏫 Private School No. 478", 75, 40),
     School("🏫 Private School No. 679", 100, 72),
     School("🏫 Private School No. 123", 200, 152),
-    School("🏫 Luxury School", 17000, 1000),
+    School("🏫 Private School No. 2", 900, 503),
+    School("🏫 Luxury School", 170000, 1000),
 ]
 
 def get_schools_list_embed(user):
@@ -32,7 +33,7 @@ def get_schools_list_embed(user):
     embed = discord.Embed(title="🏫   Schools list:", description="Use `/learn [School title]` to learn in that school.\n*--------*", color=0xe0a15e)
 
     for school in all_schools:
-        field_value += f" • **Cost**: {school.cost} 💵\n"
+        field_value = f" • **Cost**: {school.cost} 💵\n"
         field_value += f" • **Education level**: {school.learning_points_gain} 📖\n"
         field_value += f"*--------*\n"
 
@@ -64,10 +65,7 @@ def learn(user, school):
 def get_school_choices():
     choices = []
 
-    schools_to_show = all_schools
-    schools_to_show.reverse()
-
-    for school in schools_to_show:
+    for school in all_schools:
         spaces_to_add = 4
         choices.append(app_commands.Choice(name=f"{school.name} {((spaces_to_add) * '  ')}· {school.cost} 💵 · {school.learning_points_gain} 📖", value=school.name))
 

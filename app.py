@@ -17,6 +17,7 @@ import economy
 import database
 import jobs
 import schools
+import other_jobs
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -33,6 +34,8 @@ async def on_ready():
     except Exception as e:
         print(e)
 
+    await bot.change_presence(activity=discord.Game(name="/work"))
+
     for guild in bot.guilds:
         await economy.update_all_guild_nicknames(guild)
 
@@ -45,9 +48,41 @@ async def background_nick_update_loop():
 async def ping(interaction: discord.Interaction):
     await interaction.response.send_message("Pong!")
 
+@bot.tree.command(name="reset_data", description="⚠️ Resets all your data (ex. balance will be 0)")
+async def reset_data(interaction: discord.Interaction):
+    secret_code = str(interaction.user.id)[0:6]
+    await interaction.response.send_message(f"# This will reset all your KeEco data.\n⚠️ *Type `/reset_data_confirm {secret_code}`* (not recommended)⚠️", ephemeral=True)
+
+@bot.tree.command(name="reset_data_confirm", description="⚠️ Confirm data reset.")
+async def reset_data_confirm(interaction: discord.Interaction, secret_code: str):
+    secret_code_valid = str(interaction.user.id)[0:6]
+
+    if secret_code_valid == secret_code:
+        economy.reset_user_data(interaction.user)
+        await interaction.response.send_message("✅ Data reset successfully!")
+    else:
+        await interaction.response.send_message("❌ Invalid secret code!")
+        return
+
 @bot.tree.command(name="jobs", description="Displays all jobs in game.")
 async def jobs_display(interaction: discord.Interaction):
     await interaction.response.send_message(embed=jobs.get_jobs_list_embed(interaction.user))
+
+@bot.tree.command(name="schools", description="Displays all schools in game.")
+async def schools_display(interaction: discord.Interaction):
+    await interaction.response.send_message(embed=schools.get_schools_list_embed(interaction.user))
+
+@bot.tree.command(name="fish", description="Go fishing.")
+@app_commands.describe(equipment="Choose your fishing equipment. (Better equipment, better results.)")
+@app_commands.choices(equipment=other_jobs.get_fishing_equipment_choices())
+async def fish(interaction: discord.Interaction, equipment: int):
+    await interaction.response.send_message(embed=other_jobs.fishing(interaction.user, equipment))
+    await economy.update_user_nickname(interaction.user)
+
+@bot.tree.command(name="walk_a_dog", description="Walk someone's dog and earn some money.")
+async def walk_a_dog(interaction: discord.Interaction):
+    await interaction.response.send_message(embed=other_jobs.walk_dog(interaction.user))
+    await economy.update_user_nickname(interaction.user)
 
 @bot.tree.command(name="job_quit", description="Quit your job.")
 async def job_quit(interaction: discord.Interaction):
